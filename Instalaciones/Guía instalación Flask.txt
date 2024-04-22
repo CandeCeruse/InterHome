@@ -1,0 +1,12 @@
+Instalación Flask (Linux).
+
+1. Instalar Python (Flask solo soporta Python 3.8 o posterior).
+2. Hacer una carpeta de proyecto y crear el entorno virtual:
+    $ mkdir myproject
+    $ cd myproject
+    $ python3 -m venv .venv
+3. Activar el entorno virtual:
+    $ . .venv/bin/activate
+4. Una vez que estamos en el entorno (debe encontrarse un (.venv) detras del nombre del equipo tal que; (.venv) [Nombre]@raspberrypi:):
+    $ pip install Flask
+5. Dejar descargar las dependencias
