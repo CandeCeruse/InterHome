@@ -1,7 +1,6 @@
 # InterHome
 
 ### Para hacer:
-<<<<<<< HEAD
 [x] Comunicación ESP-RaspberryPi
 [x] Control de LEDs desde ESP
 [x] Lectura de Sensores desde ESP
