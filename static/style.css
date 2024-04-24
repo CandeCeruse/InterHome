@@ -1,0 +1,70 @@
+body {
+    background-color: #ececec;
+    padding: 0;
+    margin: 0;
+  }
+  input[type="checkbox"] {
+    height: 200px;
+    width: 200px;
+    -webkit-appearance: none;
+    box-shadow: 
+      -10px -10px 15px rgba(255, 255, 255, 0.5),
+      10px 10px 15px rgba(70, 70, 70, 0.12);
+    position: relative;
+    margin-top: 125px;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 20px solid #ececec;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  input[type="checkbox"]::after {
+    font-family: FontAwesome;
+    content: "\f011";
+    color: #7a7a7a;
+    font-size: 70px;
+  }
+  input[type="checkbox"]:checked{
+    box-shadow: 
+    -10px -10px 15px rgba(255, 255, 255, 0.5),
+    10px 10px 15px rgba(70, 70, 70, 0.12),
+    inset -10px -10px 15px rgba(255, 255, 255, 0.5),
+    inset 10px 10px 15px rgba(70, 70, 70, 0.12);
+  }
+  input[type="checkbox"]:checked::after{
+    color: #15e38a;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ajusta la altura según sea necesario */
+}
+
+.row-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* Permite que los elementos se envuelvan en nuevas líneas */
+    justify-content: flex-end; /* Alinea los elementos al final del contenedor */
+}
+
+.light-devices, .temperature-devices {
+    flex: 1; /* Esto hace que ambas filas tengan la misma anchura */
+    padding: 20px; /* Espacio interno para cada fila */
+}
+
+/* Estilos específicos para dispositivos de tipo "light" */
+
+/* Estilos específicos para dispositivos de tipo "temperature" */
+
+/* Media Query para ajustar el diseño en dispositivos móviles */
+@media only screen and (max-width: 600px) {
+    .row-container {
+        flex-direction: column;
+    }
+}
