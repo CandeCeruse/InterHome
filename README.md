@@ -10,3 +10,5 @@
 - [ ] Control de código mediante mensajes RaspberryPi-Web
 - [ ] Actualización de información de sensores en Web
 - [ ] Actualización de controles en Web según ESPs conectadas
+### Para discutir:
+- [ ] En quien recae la instalación de nuevos dispositivos.
