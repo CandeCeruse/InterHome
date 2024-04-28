@@ -1,6 +1,10 @@
 $(document).ready(function() {
     getData();
     // Llamar funcion que consiga los estados de los dispositivos (on/off de las luces).
+    // Recargar la página cada 5 segundos
+    setInterval(function(){
+        window.location.reload();
+    }, 5000);
 });
 
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
