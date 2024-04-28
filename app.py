@@ -1,9 +1,7 @@
 from flask import Flask, jsonify, request, render_template
-#from flask_mqtt import Mqtt
 from flask_socketio import SocketIO, emit
 import json
 import paho.mqtt.client as mqtt
-#from modules.pruebamqtt import enviar_mensaje
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = "secret!"
@@ -11,17 +9,26 @@ app.config["SECRET_KEY"] = "secret!"
 # Configuración de CORS para permitir solicitudes desde el dominio del cliente
 socketio = SocketIO(app)
 
-#Variables globales
+# Variables globales para almacenar información sobre los dispositivos conectados 
 devices = {}
 last_temperature_data = None
 
 def on_connect(client, userdata, flags, rc):
+    """
+    Función que se ejecuta cuando el cliente MQTT se conecta al broker.
+    Se suscribe a los temas "device/connected", "device/disconnected" y "temp".
+    """
     print("Connected with result code "+str(rc))
     client.subscribe("device/connected")
     client.subscribe("device/disconnected")
     client.subscribe("temp")
 
 def on_message(client, userdata, message):
+    """
+    Función que se ejecuta cuando se recibe un mensaje en uno de los temas suscritos.
+    Procesa los mensajes de dispositivos conectados/desconectados y actualiza la lista de dispositivos.
+    También maneja los mensajes de temperatura, validando y almacenando los últimos datos recibidos.
+    """
     global last_temperature_data
     topic = message.topic
     payload = message.payload.decode()
@@ -60,6 +67,9 @@ def on_message(client, userdata, message):
 
 
 def is_valid_temperature_data(data):
+    """
+    Verifica si los datos de temperatura recibidos son válidos, comprobando que la temperatura y la humedad sean números.
+    """
     if not isinstance(data.get('temperature'), (int, float)) or not isinstance(data.get('humidity'), (int, float)):
         return False
     return True
@@ -67,6 +77,10 @@ def is_valid_temperature_data(data):
 
 @app.route('/temperature', methods=['GET'])
 def temperature():   
+    """
+    Ruta que devuelve los últimos datos de temperatura válidos en formato JSON.
+    Si no hay datos válidos disponibles, devuelve un error 404.
+    """
     global last_temperature_data
     if last_temperature_data is None or not is_valid_temperature_data(last_temperature_data):
         return jsonify({"error": "No hay datos válidos disponibles"}), 404
@@ -81,11 +95,16 @@ def temperature():
         return jsonify(last_temperature_data)
     
 def get_temperature_devices(devices):
-    # Filtra el diccionario para obtener solo los dispositivos de tipo 'temperatura'
+    """
+    Filtra el diccionario de dispositivos para obtener solo los dispositivos de tipo 'temperatura'.
+    """
     temperature_devices = {device_id: device for device_id, device in devices.items() if device['type'] == 'temperature'}
     return temperature_devices
 
 def get_device_id_by_mac(devices, mac):
+    """
+    Busca el ID de un dispositivo basado en su dirección MAC.
+    """
     for device_id, device in devices.items():
         if device.get('MAC') == mac:
             return device_id
@@ -94,8 +113,12 @@ def get_device_id_by_mac(devices, mac):
 # Ruta para manejar la solicitud POST
 @app.route('/light', methods=['POST'])
 def actualizar_estado():
+    """
+    Ruta que maneja las solicitudes POST para actualizar el estado de un dispositivo.
+    Publica el estado en el tema MQTT correspondiente al dispositivo.
+    """
     data = request.json # Obtiene los datos JSON enviados en el cuerpo de la solicitud
-    topic = data.get('topic', 'light')
+    topic = data.get('topic', 'light') 
     id = data.get('id', '')
     state = data.get('state', 'OFF')
     # Buscar el dispositivo por ID y obtener su MAC
@@ -115,6 +138,9 @@ def actualizar_estado():
 
 @app.route("/")
 def home():
+    """
+    Ruta que renderiza la página principal, mostrando la lista de dispositivos conectados.
+    """
     devices_list = [{'id': id, 'type': device['type'], 'MAC': device['MAC']} for id, device in devices.items()]
     return render_template("index.html", devices=devices_list)
 
