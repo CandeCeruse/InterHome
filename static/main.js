@@ -1,5 +1,6 @@
 $(document).ready(function() {
     getData();
+    // Llamar funcion que consiga los estados de los dispositivos (on/off de las luces).
 });
 
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
