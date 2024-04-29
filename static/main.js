@@ -6,15 +6,23 @@ $(document).ready(function() {
         window.location.reload();
     }, 5000);
 
+    
     var checkboxArray = [];
-    for (let i = 1; i < 10; i++) { //devices.length
-        var element = document.getElementById("toggleButton" + i.toString);
+    for (let i = 1; i < 4; i++) { //devices.length
+        var element = document.getElementById("toggleButton" + i);
         if (element !== null) {
-            checkboxArray = checkboxArray.concat({element});
+            console.log("toggleButton" + i);
+            checkboxArray.push(element);
+        }
+        else{
+            console.log(i + "does not correspond to any button.");
         }
     }
     if (checkboxArray.length > 0){
-        toggleState(checkboxArray[0])
+        //console.log(checkbox);
+        checkboxArray[0].checked = 'ON';
+        //toggleState(checkboxArray[0]);
+        
     }
     //check state
     //toggle on
