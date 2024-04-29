@@ -2,11 +2,11 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-
-const char *server = "192.168.1.19";
+//Configuración de la red Wifi y la IP de la Raspberry
+const char *server = "192.168.75.14";
 int port = 1883;
-const char *ssid="Wifi01";
-const char *passwd = "k0z7m1gus";
+const char *ssid="Nahuel";
+const char *passwd = "MIC2018+un";
 
 char serial_command = -1;
 unsigned long previousMillis = 0;
@@ -15,8 +15,13 @@ unsigned long interval = 30000;
 WiFiClient wlanclient;
 PubSubClient mqttClient(wlanclient);
 
+String macAddress = WiFi.macAddress();
+String clientId = "ESP-Client/" + macAddress;
+String topic = "device/light/" + macAddress;
+
 int LED = 2;
 
+//Función que lee un tópico dce luces y prende o apaga dependiendo del mensaje
 void mqttCallback(char *topic, byte *payload, unsigned int length) {
   Serial.println("Message arrived on Topic:");
   Serial.println(topic);
@@ -90,9 +95,6 @@ void loop() {
 
 
 void reconnect() {
-  String macAddress = WiFi.macAddress();
-  String clientId = "ESP-Client/" + macAddress;
-  String topic = "device/light/" + macAddress;
 
   while (!mqttClient.connected()) {
     Serial.println("Trying to connect to the MQTT broker...");
