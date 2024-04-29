@@ -5,7 +5,21 @@ $(document).ready(function() {
     setInterval(function(){
         window.location.reload();
     }, 5000);
+
+    var checkboxArray = [];
+    for (let i = 1; i < 10; i++) { //devices.length
+        var element = document.getElementById("toggleButton" + i.toString);
+        if (element !== null) {
+            checkboxArray = checkboxArray.concat({element});
+        }
+    }
+    if (checkboxArray.length > 0){
+        toggleState(checkboxArray[0])
+    }
+    //check state
+    //toggle on
 });
+
 
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
 //Y envia la informacion de lo recolectado en formato JSON,

@@ -18,6 +18,7 @@
                             <!-- Crear un toggleButton para dispositivos de tipo "light" -->
                             <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
                             <label for="toggleButton{{ device.id }}"></label>
+                            <!-- Mandar referencia a java de este checkbox -->
                             <br></br>
                         {% endif %}
                     {% endfor %}
