@@ -3,10 +3,10 @@
 #include <PubSubClient.h>
 
 //Configuración de la red Wifi y la IP de la Raspberry
-const char *server = "192.168.75.14";
+const char *server = "192.168.75.184";
 int port = 1883;
 const char *ssid="Nahuel";
-const char *passwd = "MIC2018+un";
+const char *passwd = "MIC2018un+";
 
 char serial_command = -1;
 unsigned long previousMillis = 0;
@@ -24,17 +24,19 @@ int estadoLED = 0;
 
 //Esta funcion publica el estado de la luz de este ESP
 String estadoLuz(){
-  estadoLED = digitalRead(LED);
+  estadoLED = digitalRead(LED_BUILTIN);
   //Si el pin está en HIGH
-  if (estadoLED == HIGH){
-      String data = "{\"estadoLED\":ON,\"MAC\":\"" + macAddress + "\"}";
+  if (estadoLED == LOW){
+      String data = "{\"estadoLuz\":ON,\"MAC\":\"" + macAddress + "\"}";
       Serial.println(data);
       return data;
-  }else {
+  }else if(estadoLED == HIGH){
       //Si el pin está en LOW
-      String data = "{\"estadoLED\":OFF,\"MAC\":\"" + macAddress + "\"}";
+      String data = "{\"estadoLuz\":OFF,\"MAC\":\"" + macAddress + "\"}";
       Serial.println(data);
       return data;
+  }else{
+      return "{\"error\":\"Estado desconocido\"}";
   }
 }
 
@@ -50,9 +52,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
   Serial.println(estado);
   
   if (estado == "ON"){
-    digitalWrite(LED, LOW);
+    digitalWrite(LED_BUILTIN, LOW);
   } else {
-    digitalWrite(LED, HIGH);
+    digitalWrite(LED_BUILTIN, HIGH);
         
   }
   
@@ -62,7 +64,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 void setup() {
   Serial.begin (115200);
   pinMode(LED, OUTPUT);
-  
+  pinMode(LED_BUILTIN, OUTPUT);
   WiFi.begin(ssid,passwd);
   Serial.print ("Connecting to AP");
   while(WiFi.status()!=WL_CONNECTED) {
@@ -102,12 +104,20 @@ void setup() {
 }
 
 void loop() {
+  String data = estadoLuz();
+  Serial.println(data);
+  // Convierto la cadena de caracteres a un array de caracteres.
+  char dataChar[data.length() + 1];
+  data.toCharArray(dataChar, sizeof(dataChar));
+  mqttClient.publish("estadoLuz", dataChar);
+
   printWifiStatus();
   //verificar si no hay conexión con el broker, si es así reconectarse:
    if(!mqttClient.connected()) {
       reconnect();
   }
   mqttClient.loop();
+  delay(2000);
 }
 
 
@@ -133,7 +143,7 @@ void reconnect() {
 }
 
 void printWifiStatus(){
-      //print the Wi-Fi status every 30 seconds
+    //print the Wi-Fi status every 30 seconds
     unsigned long currentMillis = millis();
     if (currentMillis - previousMillis >=interval){
       switch (WiFi.status()){
