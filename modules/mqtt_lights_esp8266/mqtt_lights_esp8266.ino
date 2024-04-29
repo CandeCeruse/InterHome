@@ -20,6 +20,23 @@ String clientId = "ESP-Client/" + macAddress;
 String topic = "device/light/" + macAddress;
 
 int LED = 2;
+int estadoLED = 0;
+
+//Esta funcion publica el estado de la luz de este ESP
+String estadoLuz(){
+  estadoLED = digitalRead(LED);
+  //Si el pin está en HIGH
+  if (estadoLED == HIGH){
+      String data = "{\"estadoLED\":ON,\"MAC\":\"" + macAddress + "\"}";
+      Serial.println(data);
+      return data;
+  }else {
+      //Si el pin está en LOW
+      String data = "{\"estadoLED\":OFF,\"MAC\":\"" + macAddress + "\"}";
+      Serial.println(data);
+      return data;
+  }
+}
 
 //Función que lee un tópico dce luces y prende o apaga dependiendo del mensaje
 void mqttCallback(char *topic, byte *payload, unsigned int length) {
