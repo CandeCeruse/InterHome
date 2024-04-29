@@ -64,7 +64,8 @@ void setup() {
   Serial.println();
   Serial.println ("Connected to WiFi AP, Got an IP address :");
   Serial.println (WiFi.localIP());
-
+  Serial.print("La MAC del ESP es: ");
+  Serial.println(WiFi.macAddress());
   //ACA DEBERIA AGREGAR UNA FORMA DE MANDARLE LA IP 
   
   String lastWillTopic = "device/disconnected";
