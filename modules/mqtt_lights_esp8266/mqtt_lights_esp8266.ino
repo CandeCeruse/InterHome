@@ -3,10 +3,13 @@
 #include <PubSubClient.h>
 
 //Configuración de la red Wifi y la IP de la Raspberry
-const char *server = "192.168.75.184";
+const char *server = "192.168.1.27";
+//const char *server = "192.168.75.184";
 int port = 1883;
-const char *ssid="Nahuel";
-const char *passwd = "MIC2018un+";
+const char *ssid="Wifi01";
+const char *passwd = "k0z7m1gus";
+//const char *ssid="Nahuel";
+//const char *passwd = "MIC2018un+";
 
 char serial_command = -1;
 unsigned long previousMillis = 0;
@@ -18,7 +21,7 @@ PubSubClient mqttClient(wlanclient);
 String macAddress = WiFi.macAddress();
 String clientId = "ESP-Client/" + macAddress;
 String topic = "device/light/" + macAddress;
-
+String label = "Cocina";
 int LED = 2;
 int estadoLED = 0;
 
@@ -27,12 +30,12 @@ String estadoLuz(){
   estadoLED = digitalRead(LED_BUILTIN);
   //Si el pin está en HIGH
   if (estadoLED == LOW){
-      String data = "{\"estadoLuz\":ON,\"MAC\":\"" + macAddress + "\"}";
+      String data = "{\"state\":\"ON\", \"MAC\":\"" + macAddress + "\"}";
       Serial.println(data);
       return data;
   }else if(estadoLED == HIGH){
       //Si el pin está en LOW
-      String data = "{\"estadoLuz\":OFF,\"MAC\":\"" + macAddress + "\"}";
+      String data = "{\"state\":\"OFF\", \"MAC\":\"" + macAddress + "\"}";
       Serial.println(data);
       return data;
   }else{
@@ -104,12 +107,25 @@ void setup() {
 }
 
 void loop() {
+  //Llamamos funcion que verifica el boton
+  //(El boton fue apretado)
+
+  //Prendo la luz, como? Creo una funcion con un if que prenda la luz y la apague
+  //if == apretado:
+  //  if == estado=ON
+  //    apaggo el led
+  //  if == estado=OFF
+  //    prendo el led
+  //else
+  //  apagar
+  
   String data = estadoLuz();
   Serial.println(data);
+
   // Convierto la cadena de caracteres a un array de caracteres.
   char dataChar[data.length() + 1];
   data.toCharArray(dataChar, sizeof(dataChar));
-  mqttClient.publish("estadoLuz", dataChar);
+  mqttClient.publish("device/light/state", dataChar);
 
   printWifiStatus();
   //verificar si no hay conexión con el broker, si es así reconectarse:

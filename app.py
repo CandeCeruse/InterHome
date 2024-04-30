@@ -22,6 +22,7 @@ def on_connect(client, userdata, flags, rc):
     client.subscribe("device/connected")
     client.subscribe("device/disconnected")
     client.subscribe("temp")
+    client.subscribe("device/light/state")
 
 def on_message(client, userdata, message):
     """
@@ -62,7 +63,14 @@ def on_message(client, userdata, message):
             last_temperature_data = temperature_data
         except ValueError as e:
             print(f"Error al procesar los datos de temperatura: {e}")
-            
+    elif topic == 'device/light/state':
+        state_data = json.loads(payload)
+        device_state = state_data.get('state')
+        device_MAC = state_data.get('MAC')
+        for device_id, device in devices.items():
+            if device.get('MAC') == device_MAC:
+                device['state'] = device_state
+                break
     temperature_devices = get_temperature_devices(devices)
 
 
@@ -93,13 +101,25 @@ def temperature():
             last_temperature_data['device_id'] = device_id
         #print(last_temperature_data)
         return jsonify(last_temperature_data)
-    
+
+@app.route('/state/light', methods=['GET'])
+def state_light():
+    light_states = get_light_devices(devices)
+    return jsonify(light_states)
+
 def get_temperature_devices(devices):
     """
     Filtra el diccionario de dispositivos para obtener solo los dispositivos de tipo 'temperatura'.
     """
     temperature_devices = {device_id: device for device_id, device in devices.items() if device['type'] == 'temperature'}
     return temperature_devices
+
+def get_light_devices(devices):
+    """
+    Filtra el diccionario de dispositivos para obtener solo los dispositivos de tipo 'light'.
+    """
+    light_devices = {device_id: device for device_id, device in devices.items() if device['type'] == 'light'}
+    return light_devices
 
 def get_device_id_by_mac(devices, mac):
     """
