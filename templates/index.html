@@ -16,13 +16,16 @@
                     {% for device in devices %}
                         {% if device.type == 'light' %}
                             <!-- Crear un toggleButton para dispositivos de tipo "light" -->
-                            <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
-                            <label for="toggleButton{{ device.id }}"></label>
-                            <!-- Mandar referencia a java de este checkbox -->
+                            <div class="device-container">
+                                <label for="toggleButton{{ device.id }}">Dispositivo {{ device.id }}</label>
+                                <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
+                            </div>
                             <br></br>
                         {% endif %}
                     {% endfor %}
                 </div>
+            </div>
+            <div class="row-container">
                 <div class="temperature-devices">
                     {% for device in devices %}
                         {% if device.type == 'temperature' %}

@@ -1,37 +1,17 @@
 $(document).ready(function() {
-    getTemperatureData();
+    getData();
     setLightButtonState();
     // Llamar funcion que consiga los estados de los dispositivos (on/off de las luces).
     // Recargar la página cada 5 segundos
     setInterval(function(){
         window.location.reload();
-    }, 5000);
-
-    /* CODIGO PRUEBA DE ESTADO DE BOTONES/LUCES
-    var checkboxArray = [];
-    for (let i = 1; i < 4; i++) { //devices.length
-        var element = document.getElementById("toggleButton" + i);
-        if (element !== null) {
-            console.log("toggleButton" + i);
-            checkboxArray.push(element);
-        }
-        else{
-            console.log(i + "does not correspond to any button.");
-        }
-    }
-    if (checkboxArray.length > 0){
-        checkboxArray[0].checked = 'ON';
-        //toggleState(checkboxArray[0]);
-        
-    }
-    */
+    }, 10000);
 });
-
 
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
 //Y envia la informacion de lo recolectado en formato JSON,
 // {'temperature': 37, 'humidity': 11, 'MAC': 'E8:DB:84:E5:08:96', 'device_id': 1}
-function getTemperatureData() {
+function getData() {
     const Url = "/temperature";
     $.ajax({
         url: Url,
@@ -40,6 +20,7 @@ function getTemperatureData() {
             var id = data.device_id;
             var temperatura = data.temperature;
             var humedad = data.humidity;
+            //var label = data.label;
             // Actualizar gráficos de temperatura y humedad
             updateTemperatureChart(id, temperatura, humedad);
         }        
@@ -47,23 +28,26 @@ function getTemperatureData() {
 }
 
 function setLightButtonState() {
-    const Url = "/estadoLuz";
+    const Url = "/state/light";
     $.ajax({
         url: Url,
         type: "GET",
         success: function(data) {
-            for (let i = 1; i < data.length; i++) { //devices.length
-                var element = document.getElementById("toggleButton" + i);
-                if (element !== null) {
-                    if (element.getAttribute('mac') === data.MAC){
-                        element.checked = data.estadoLuz;
-                    }
-                }
-            }
+            console.log(data);
+            // Itera sobre las claves del objeto 'data'
+            Object.keys(data).forEach(function(deviceId) {
+                // Obtiene el estado del dispositivo por su ID
+                var deviceState = data[deviceId].state;
+                // Genera el ID del botón basado en el ID del dispositivo
+                var buttonId = "toggleButton" + deviceId;
+                // Selecciona el botón por su ID
+                var $button = $("#" + buttonId);
+                // Actualiza el estado del botón basado en el estado enviado desde el servidor
+                $button.prop('checked', deviceState === 'ON');
+            });
         }        
     });
 }
-
 // Función para actualizar el gráfico de temperatura
 function updateTemperatureChart(id, temperatura, humedad) {
     const ctx = document.getElementById('temperatureChart' + id).getContext('2d');
@@ -97,6 +81,7 @@ function updateTemperatureChart(id, temperatura, humedad) {
 }
 
 function toggleState(checkbox) {
+    console.log(checkbox);
     var id = checkbox.getAttribute('device'); // Aquí puedes establecer el ID que deseas enviar al servidor
     var mac = checkbox.getAttribute('mac'); // Obtiene la dirección MAC del dispositivo
     var state = checkbox.checked ? 'ON' : 'OFF';
@@ -119,3 +104,4 @@ function sendData(id, mac, state){
         }
     });
 }
+
