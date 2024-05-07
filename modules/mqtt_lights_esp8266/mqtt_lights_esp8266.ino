@@ -22,8 +22,12 @@ String macAddress = WiFi.macAddress();
 String clientId = "ESP-Client/" + macAddress;
 String topic = "device/light/" + macAddress;
 String label = "Cocina";
-int LED = 2;
-int estadoLED = 0;
+
+int LED = 4; // D2 (Estamos usando el BUILTIN igual, pero si es necesario cambiar)
+int PIN_BUTTON = 5; //D1
+int ledState = 0;
+int buttonOld = 0;
+int buttonNew = 0;
 
 //Esta funcion publica el estado de la luz de este ESP
 String estadoLuz(){
@@ -43,31 +47,41 @@ String estadoLuz(){
   }
 }
 
+void buttonLight(){
+  buttonNew = digitalRead(PIN_BUTTON);
+  delay(10);
+  if (buttonNew != buttonOld){
+    buttonOld = buttonNew;
+    if(buttonNew == LOW){
+      ledState = !ledState;
+      digitalWrite(LED_BUILTIN, ledState);
+    }
+  }
+}
+
 //Función que lee un tópico dce luces y prende o apaga dependiendo del mensaje
 void mqttCallback(char *topic, byte *payload, unsigned int length) {
   Serial.println("Message arrived on Topic:");
   Serial.println(topic);
-
   String estado = "";
   for (int i = 0; i < length; i++) {
     estado += (char)payload[i];
   }
   Serial.println(estado);
-  
   if (estado == "ON"){
     digitalWrite(LED_BUILTIN, LOW);
   } else {
-    digitalWrite(LED_BUILTIN, HIGH);
-        
+    digitalWrite(LED_BUILTIN, HIGH);  
   }
-  
 }
 
 
 void setup() {
   Serial.begin (115200);
-  pinMode(LED, OUTPUT);
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(PIN_BUTTON, INPUT); // Configura el pin del pulsador como entrada
+  pinMode(LED_BUILTIN, OUTPUT); // Configura el pin del LED como salida
+  digitalWrite(LED_BUILTIN, ledState);
+
   WiFi.begin(ssid,passwd);
   Serial.print ("Connecting to AP");
   while(WiFi.status()!=WL_CONNECTED) {
@@ -103,22 +117,11 @@ void setup() {
   String topic = "device/light/" + macAddress;
   mqttClient.subscribe(topic.c_str());
   mqttClient.setCallback(mqttCallback);
-  
 }
 
-void loop() {
-  //Llamamos funcion que verifica el boton
-  //(El boton fue apretado)
 
-  //Prendo la luz, como? Creo una funcion con un if que prenda la luz y la apague
-  //if == apretado:
-  //  if == estado=ON
-  //    apaggo el led
-  //  if == estado=OFF
-  //    prendo el led
-  //else
-  //  apagar
-  
+void loop() {
+  buttonLight();
   String data = estadoLuz();
   Serial.println(data);
 
