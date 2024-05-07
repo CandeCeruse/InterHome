@@ -14,5 +14,5 @@
 - [ ] En quien recae la instalación de nuevos dispositivos. 
 ### Extra:
 - [x] Actualizar página cada x segundos.
-- [ ] Tecla física de luces.
+- [x] Tecla física de luces.
 - [ ] Pedir el estado solo cuando se recargue la pagina?
