@@ -1,5 +1,7 @@
 # InterHome
 
+IP fijo Raspi: 10.3.141.1
+
 ### Para hacer:
 - [x] Comunicación ESP-RaspberryPi.
 - [x] Control de LEDs desde ESP.
