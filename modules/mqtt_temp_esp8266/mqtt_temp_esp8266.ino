@@ -5,7 +5,7 @@
 
 DHT11 dht11(2);
 
-const char *server = "192.168.1.27";
+const char *server = "192.168.1.13";
 int port = 1883;
 const char *ssid="Wifi01";
 const char *passwd = "k0z7m1gus";

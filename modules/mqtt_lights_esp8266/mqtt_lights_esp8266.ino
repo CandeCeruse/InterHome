@@ -3,7 +3,7 @@
 #include <PubSubClient.h>
 
 //Configuración de la red Wifi y la IP de la Raspberry
-const char *server = "192.168.1.27";
+const char *server = "192.168.1.13";
 //const char *server = "192.168.75.184";
 int port = 1883;
 const char *ssid="Wifi01";
@@ -14,6 +14,7 @@ const char *passwd = "k0z7m1gus";
 char serial_command = -1;
 unsigned long previousMillis = 0;
 unsigned long interval = 30000;
+unsigned long intervalState = 2000;
 
 WiFiClient wlanclient;
 PubSubClient mqttClient(wlanclient);
@@ -31,16 +32,14 @@ int buttonNew = 0;
 
 //Esta funcion publica el estado de la luz de este ESP
 String estadoLuz(){
-  estadoLED = digitalRead(LED_BUILTIN);
+  int estadoLED = digitalRead(LED_BUILTIN);
   //Si el pin está en HIGH
   if (estadoLED == LOW){
       String data = "{\"state\":\"ON\", \"MAC\":\"" + macAddress + "\"}";
-      Serial.println(data);
       return data;
   }else if(estadoLED == HIGH){
       //Si el pin está en LOW
       String data = "{\"state\":\"OFF\", \"MAC\":\"" + macAddress + "\"}";
-      Serial.println(data);
       return data;
   }else{
       return "{\"error\":\"Estado desconocido\"}";
@@ -61,13 +60,10 @@ void buttonLight(){
 
 //Función que lee un tópico dce luces y prende o apaga dependiendo del mensaje
 void mqttCallback(char *topic, byte *payload, unsigned int length) {
-  Serial.println("Message arrived on Topic:");
-  Serial.println(topic);
   String estado = "";
   for (int i = 0; i < length; i++) {
     estado += (char)payload[i];
   }
-  Serial.println(estado);
   if (estado == "ON"){
     digitalWrite(LED_BUILTIN, LOW);
   } else {
@@ -91,18 +87,11 @@ void setup() {
   Serial.println();
   Serial.println ("Connected to WiFi AP, Got an IP address :");
   Serial.println (WiFi.localIP());
-  Serial.print("La MAC del ESP es: ");
-  Serial.println(WiFi.macAddress());
-  //ACA DEBERIA AGREGAR UNA FORMA DE MANDARLE LA IP 
-
-  String macAddress = WiFi.macAddress();
   String lastWillTopic = "device/disconnected";
   String lastWillMessage = "{\"MAC\":\"" + macAddress + "\"}";
   mqttClient.setServer (server, port);
   
   //Realizar conexión al MQTT Broker
-  
-  String clientId = "ESP-Client/" + macAddress;
   if (mqttClient.connect(clientId.c_str(), NULL, NULL, lastWillTopic.c_str(), 1, true, lastWillMessage.c_str())) {
     Serial.println ("Connected to MQTT Broker");
     // Publica el tipo de dispositivo al broker MQTT
@@ -113,8 +102,6 @@ void setup() {
     Serial.println (mqttClient.state());
     delay(200);
   }
-  // Suscribirse a los temas
-  String topic = "device/light/" + macAddress;
   mqttClient.subscribe(topic.c_str());
   mqttClient.setCallback(mqttCallback);
 }
@@ -123,20 +110,21 @@ void setup() {
 void loop() {
   buttonLight();
   String data = estadoLuz();
-  Serial.println(data);
-
   // Convierto la cadena de caracteres a un array de caracteres.
   char dataChar[data.length() + 1];
   data.toCharArray(dataChar, sizeof(dataChar));
-  mqttClient.publish("device/light/state", dataChar);
 
+  unsigned long currentMillis = millis();
+  if(currentMillis - previousMillis >= intervalState){
+    previousMillis = currentMillis;
+    mqttClient.publish("device/light/state", dataChar);
+  }
   printWifiStatus();
   //verificar si no hay conexión con el broker, si es así reconectarse:
    if(!mqttClient.connected()) {
       reconnect();
   }
   mqttClient.loop();
-  delay(2000);
 }
 
 
