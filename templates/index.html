@@ -24,8 +24,10 @@
             <div class="dispositivo-sensores">
                 {% for device in devices %}
                     {% if device.type == 'temperature' %}
-                        <div class="dispositivo-contenedor">      
-                            <canvas id="temperatureChart{{ device.id }}"></canvas>
+                        <div class="dispositivo-contenedor">
+                            <label for="temperatureChart{{ device.id }}">Dispositivo {{ device.id }}</label>      
+                            <canvas id="temperatureChart{{ device.id }}" height="300" width="550"></canvas>
+
                         </div>
                     {% endif %}
                 {% endfor %}  
