@@ -10,33 +10,25 @@
     </head>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
     <body>
-        <div class="container">
-            <div class="row-container">
-                <div class="light-devices">
-                    {% for device in devices %}
-                        {% if device.type == 'light' %}
-                            <!-- Crear un toggleButton para dispositivos de tipo "light" -->
-                            <div class="device-container">
-                                <label for="toggleButton{{ device.id }}">Dispositivo {{ device.id }}</label>
-                                <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
-                            </div>
-                            <br></br>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        <div class="contenedor">
+            <div class="dispositivo-luces">
+                {% for device in devices %}
+                    {% if device.type == 'light' %}
+                        <div class="dispositivo-contenedor">
+                            <label for="toggleButton{{ device.id }}">Dispositivo {{ device.id }}</label>
+                            <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
+                        </div>                          
+                    {% endif %}
+                {% endfor %}
             </div>
-            <img src="totoro_and_leaf.png" alt="Totoro and Leaf">
-            <div class="row-container">
-                <div class="temperature-devices">
-                    {% for device in devices %}
-                        {% if device.type == 'temperature' %}
-                            <!-- Crear gráficos para dispositivos de tipo "temperature" -->
-                            <div>
-                                <canvas id="temperatureChart{{ device.id }}"></canvas>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+            <div class="dispositivo-sensores">
+                {% for device in devices %}
+                    {% if device.type == 'temperature' %}
+                        <div class="dispositivo-contenedor">      
+                            <canvas id="temperatureChart{{ device.id }}"></canvas>
+                        </div>
+                    {% endif %}
+                {% endfor %}  
             </div>
         </div>
     </body>
