@@ -22,7 +22,8 @@ function getData() {
             var humedad = data.humidity;
             //var label = data.label;
             // Actualizar gráficos de temperatura y humedad
-            updateTemperatureChart(id, temperatura, humedad);
+            //updateTemperatureChart(id, temperatura, humedad);
+            dmbChart(300, humedad, temperatura, id);
         }        
     });
 }
@@ -48,37 +49,65 @@ function setLightButtonState() {
         }        
     });
 }
-// Función para actualizar el gráfico de temperatura
-function updateTemperatureChart(id, temperatura, humedad) {
-    const ctx = document.getElementById('temperatureChart' + id).getContext('2d');
-    const config = {
-        type: 'bar',
-        data: {
-            labels: [
-                'Temperatura',
-                'Humedad'
-            ],
-            datasets: [{
-                label: 'Temperatura y Humedad',
-                data: [temperatura, humedad],
-                backgroundColor:[
-                    'rgb(255, 99, 132)',
-                    'rgb(54, 162, 235)'
-            
-                ],
-                hoverOffset: 4
-            }]
-        },
-        options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          },
-    };
-    new Chart(ctx, config);
-}
+
+function dmbChart(scale, percent, temp, id) {
+    var ctx = document.getElementById('temperatureChart' + id).getContext('2d');
+    var cx = scale / 2;
+    var cy = scale / 2;
+    var radius = scale * 0.375;
+    var arcwidth = scale * 0.2;
+    var decimal = percent / 100;
+    var PI2 = Math.PI * 2;
+    var offset = -PI2 / 4;
+
+    ctx.lineWidth = arcwidth;
+  
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.strokeStyle = "lightseagreen"; //darkcyan lightseagreen
+    ctx.arc(cx, cy, radius, offset, offset + PI2 * decimal);
+    ctx.stroke();
+  
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.arc(cx, cy, radius * 0.9, offset, offset + PI2 * decimal);
+    ctx.strokeStyle = "turquoise"; //turquoise
+    ctx.stroke();
+  
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.arc(cx, cy, radius, offset + PI2 * decimal, offset + PI2);
+    ctx.strokeStyle = "gray";
+    ctx.stroke();
+  
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.arc(cx, cy, radius * 0.9, offset + PI2 * decimal, offset);
+    ctx.strokeStyle = "darkgray";
+    ctx.stroke();
+  
+    var innerRadius = radius - arcwidth;
+  
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'darkcyan'; //darkcyan
+    ctx.font = (innerRadius) + 'px verdana';
+    ctx.fillText(percent + "%", cx, cy);
+  
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'orange'; //darkcyan
+    ctx.font = (innerRadius * 2) + 'px verdana';
+    ctx.fillText(temp + '°C', cx + 3 * radius, cy);
+  }
 
 function toggleState(checkbox) {
     console.log(checkbox);
@@ -104,4 +133,3 @@ function sendData(id, mac, state){
         }
     });
 }
-

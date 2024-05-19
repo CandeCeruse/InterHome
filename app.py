@@ -1,13 +1,10 @@
 from flask import Flask, jsonify, request, render_template
-from flask_socketio import SocketIO, emit
 import json
 import paho.mqtt.client as mqtt
+from math import ceil, sqrt
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = "secret!"
-
-# Configuración de CORS para permitir solicitudes desde el dominio del cliente
-socketio = SocketIO(app)
 
 # Variables globales para almacenar información sobre los dispositivos conectados 
 devices = {}
@@ -64,6 +61,7 @@ def on_message(client, userdata, message):
         except ValueError as e:
             print(f"Error al procesar los datos de temperatura: {e}")
     elif topic == 'device/light/state':
+
         state_data = json.loads(payload)
         device_state = state_data.get('state')
         device_MAC = state_data.get('MAC')
@@ -72,7 +70,6 @@ def on_message(client, userdata, message):
                 device['state'] = device_state
                 break
     temperature_devices = get_temperature_devices(devices)
-
 
 def is_valid_temperature_data(data):
     """
@@ -170,4 +167,4 @@ if __name__ == "__main__":
     client.on_message = on_message
     client.connect('localhost', 1883, keepalive=60)
     client.loop_start()
-    socketio.run(app, host='0.0.0.0', port=5000, use_reloader=False, debug=True)
+    app.run(host='0.0.0.0', port=5000, use_reloader=False, debug=True)
