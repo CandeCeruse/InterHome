@@ -55,34 +55,18 @@ function dmbChart(scale, percent, temp, id) {
     var cx = scale / 2;
     var cy = scale / 2;
     var radius = scale * 0.375;
-    var arcwidth = scale * 0.2;
-    var decimal = percent / 100;
     var PI2 = Math.PI * 2;
-    var offset = -PI2 / 4;
+    var up = Math.PI * -0.5;
+    var angle = up + PI2 * percent / 100;
+    var fontsize = scale * 0.225
 
-    ctx.lineWidth = arcwidth;
+    ctx.lineWidth = scale * 0.2;
   
     ctx.beginPath();
     ctx.shadowblur = 1;
     ctx.shadowcolor = "black";
     ctx.shadowOffsetX = 25;
-    ctx.strokeStyle = "lightseagreen"; //darkcyan lightseagreen
-    ctx.arc(cx, cy, radius, offset, offset + PI2 * decimal);
-    ctx.stroke();
-  
-    ctx.beginPath();
-    ctx.shadowblur = 1;
-    ctx.shadowcolor = "black";
-    ctx.shadowOffsetX = 25;
-    ctx.arc(cx, cy, radius * 0.9, offset, offset + PI2 * decimal);
-    ctx.strokeStyle = "turquoise"; //turquoise
-    ctx.stroke();
-  
-    ctx.beginPath();
-    ctx.shadowblur = 1;
-    ctx.shadowcolor = "black";
-    ctx.shadowOffsetX = 25;
-    ctx.arc(cx, cy, radius, offset + PI2 * decimal, offset + PI2);
+    ctx.arc(cx, cy, radius, 0, PI2);
     ctx.strokeStyle = "gray";
     ctx.stroke();
   
@@ -90,24 +74,41 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowblur = 1;
     ctx.shadowcolor = "black";
     ctx.shadowOffsetX = 25;
-    ctx.arc(cx, cy, radius * 0.9, offset + PI2 * decimal, offset);
+    ctx.arc(cx, cy, radius * 0.9, 0, PI2);
     ctx.strokeStyle = "darkgray";
     ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.strokeStyle = "lightseagreen";
+    ctx.arc(cx, cy, radius, up, angle);
+    ctx.stroke();
   
-    var innerRadius = radius - arcwidth;
+    ctx.beginPath();
+    ctx.shadowblur = 1;
+    ctx.shadowcolor = "black";
+    ctx.shadowOffsetX = 25;
+    ctx.arc(cx, cy, radius * 0.9, up, angle);
+    ctx.strokeStyle = "turquoise";
+    ctx.stroke();
+    
   
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'darkcyan'; //darkcyan
-    ctx.font = (innerRadius) + 'px verdana';
+    ctx.fillStyle = 'darkcyan';
+    ctx.font = (fontsize) + 'px trebuchet ms';
     ctx.fillText(percent + "%", cx, cy);
-  
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = 'orange'; //darkcyan
-    ctx.font = (innerRadius * 2) + 'px verdana';
-    ctx.fillText(temp + '°C', cx + 3 * radius, cy);
-  }
+    
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'darkorange';
+    ctx.font = (fontsize * 2) + 'px trebuchet ms';
+    ctx.fillText(temp, cx + 3 * radius, cy);
+    ctx.textAlign = 'left';
+    ctx.font = (fontsize * 2) + 'px tahoma';
+    ctx.fillText('°C', cx + 3 * radius, cy);
+}
 
 function toggleState(checkbox) {
     console.log(checkbox);
