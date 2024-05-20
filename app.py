@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 import json
 import paho.mqtt.client as mqtt
-from math import ceil, sqrt
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.config["SECRET_KEY"] = "secret!"
