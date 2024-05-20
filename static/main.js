@@ -52,28 +52,24 @@ function dmbChart(scale, percent, temp, id) {
     var cx = scale / 2;
     var cy = scale / 2;
     var radius = scale * 0.375;
-    var arcwidth = scale * 0.2;
-    var decimal = percent / 100;
     var PI2 = Math.PI * 2;
-    var offset = -PI2 / 4;
+    var up = Math.PI / -2;
+    var angle = up + PI2 * percent / 100;
+    var fontsize = scale * 0.45;
 
-    ctx.lineWidth = arcwidth;
+    ctx.lineWidth = scale * 0.2;
     
-
-    
-  
-
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
 
     ctx.beginPath();
-    ctx.arc(cx, cy, radius, offset + PI2 * decimal, offset + PI2);
+    ctx.arc(cx, cy, radius, 0, PI2);
     ctx.strokeStyle = "gray";
     ctx.stroke();
   
     ctx.beginPath();
-    ctx.arc(cx, cy, radius * 0.9, offset + PI2 * decimal, offset);
+    ctx.arc(cx, cy, radius * 0.9, 0, PI2);
     ctx.strokeStyle = "darkgray";
     ctx.stroke();
   
@@ -83,8 +79,8 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
-    ctx.strokeStyle = "lightseagreen"; //darkcyan lightseagreen
-    ctx.arc(cx, cy, radius, offset, offset + PI2 * decimal);
+    ctx.strokeStyle = "lightseagreen";
+    ctx.arc(cx, cy, radius, up, angle);
     ctx.stroke();
     ctx.restore(); // Restaurar estado anterior
 
@@ -94,24 +90,23 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
-    ctx.strokeStyle = "turquoise"; //turquoise
-    ctx.arc(cx, cy, radius * 0.9, offset, offset + PI2 * decimal);
+    ctx.strokeStyle = "turquoise";
+    ctx.arc(cx, cy, radius * 0.9, up, angle);
     ctx.stroke();
     ctx.restore(); // Restaurar estado anterior
 
-    var fontsize = scale * 0.225;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'darkcyan';
-    ctx.font = (fontsize) + 'px trebuchet ms';
+    ctx.font = (fontsize * 0.5) + 'px trebuchet ms';
     ctx.fillText(percent + "%", cx, cy);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = 'darkorange';
-    ctx.font = (fontsize * 2) + 'px trebuchet ms';
+    ctx.font = (fontsize) + 'px trebuchet ms';
     ctx.fillText(temp, cx + 3 * radius, cy);
     ctx.textAlign = 'left';
-    ctx.font = (fontsize * 2) + 'px tahoma';
+    ctx.font = (fontsize) + 'px tahoma';
     ctx.fillText('°C', cx + 3 * radius, cy);
   }
 
