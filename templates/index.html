@@ -15,7 +15,7 @@
                 {% for device in devices %}
                     {% if device.type == 'light' %}
                         <div class="dispositivo-contenedor">
-                            <label for="toggleButton{{ device.id }}">Dispositivo {{ device.id }}</label>
+                            <label for="toggleButton{{ device.id }}" id="label-{{ device.id }}" class="device-label" data-default-name="Nuevo dispositivo">{{ device.name }}</label>
                             <input type="checkbox" id="toggleButton{{ device.id }}" onchange="toggleState(this)" device="{{ device.id }}" mac="{{ device.MAC }}">
                         </div>                          
                     {% endif %}
@@ -25,14 +25,68 @@
                 {% for device in devices %}
                     {% if device.type == 'temperature' %}
                         <div class="dispositivo-contenedor">
-                            <label for="temperatureChart{{ device.id }}">Dispositivo {{ device.id }}</label>      
-                            <canvas id="temperatureChart{{ device.id }}" height="300" width="550"></canvas>
+                            <label for="temperatureChart{{ device.id }}" id="label-{{ device.id }}" class="device-label" data-default-name="Nuevo dispositivo">{{ device.name }}</label>
+                            <canvas id="temperatureChart{{ device.id }}" height="300" width="300"></canvas>
+                            <canvas id="humedadChart{{ device.id }}" height="250" width="300"></canvas>                               
                         </div>
                     {% endif %}
                 {% endfor %}  
             </div>
         </div>
     </body>
+    <script>
+        function nombrarDispositivo(deviceId) {
+        let texto;
+        let nombreDispositivo = prompt("Ingrese el nombre del dispositivo: ");
+        if (nombreDispositivo == null || nombreDispositivo == "") {
+            nombrarDispositivo(deviceId);
+        } else {
+            texto = nombreDispositivo;
+            document.getElementById("label-" + deviceId).innerText = texto;
+            localStorage.setItem('deviceName-' + deviceId, texto); // Guarda el nuevo nombre en el almacenamiento local
+
+            // Envía el nuevo nombre al servidor
+            $.ajax({
+                url: '/update-device-name/' + deviceId,
+                type: 'POST',
+                data: {new_name: texto},
+                success: function(response) {
+                    console.log(response.status); // Manejo de respuesta exitosa
+                },
+                error: function(error) {
+                    console.error('Error al actualizar el nombre del dispositivo:', error);
+                }
+            });
+        }
+    }
+
+
+        $(document).ready(function() {
+            $('.device-label').each(function() {
+                let deviceId = this.id.split('-')[1];
+                let storedName = localStorage.getItem('deviceName-' + deviceId);
+                if (storedName) {
+                    $(this).text(storedName);
+                }
+            });
+
+            $('.device-label').click(function() {
+                event.stopPropagation();
+                let deviceId = this.id.split('-')[1];
+                nombrarDispositivo(deviceId);
+            });
+
+            // El resto de tu código JavaScript va aquí...
+            // Por ejemplo:
+            getData();
+            setLightButtonState();
+            setInterval(function(){
+                window.location.reload();
+            }, 10000);
+        });
+
+        // Aquí van todas las demás funciones que necesites, como getData(), setLightButtonState(), etc.
+    </script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="static/main.js"></script>
 </html>

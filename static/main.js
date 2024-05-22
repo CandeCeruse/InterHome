@@ -1,13 +1,3 @@
-$(document).ready(function() {
-    getData();
-    setLightButtonState();
-    // Llamar funcion que consiga los estados de los dispositivos (on/off de las luces).
-    // Recargar la página cada 5 segundos
-    setInterval(function(){
-        window.location.reload();
-    }, 10000);
-});
-
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
 //Y envia la informacion de lo recolectado en formato JSON,
 // {'temperature': 37, 'humidity': 11, 'MAC': 'E8:DB:84:E5:08:96', 'device_id': 1}
@@ -49,6 +39,9 @@ function setLightButtonState() {
 
 function dmbChart(scale, percent, temp, id) {
     var ctx = document.getElementById('temperatureChart' + id).getContext('2d');
+    var ctz = document.getElementById('humedadChart' + id).getContext('2d');
+    var img = new Image();
+    img.src = "/home/jdoe/my_proyect/static/totoro_and_leaf.png";
     var cx = scale / 2;
     var cy = scale / 2;
     var radius = scale * 0.375;
@@ -58,7 +51,6 @@ function dmbChart(scale, percent, temp, id) {
     var fontsize = scale * 0.45;
 
     ctx.lineWidth = scale * 0.2;
-    
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
@@ -79,7 +71,7 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
-    ctx.strokeStyle = "lightseagreen";
+    ctx.strokeStyle = "lightseagreen"; //darkcyan lightseagreen
     ctx.arc(cx, cy, radius, up, angle);
     ctx.stroke();
     ctx.restore(); // Restaurar estado anterior
@@ -90,24 +82,26 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
-    ctx.strokeStyle = "turquoise";
+    ctx.strokeStyle = "turquoise"; //turquoise
     ctx.arc(cx, cy, radius * 0.9, up, angle);
     ctx.stroke();
     ctx.restore(); // Restaurar estado anterior
 
+    var fontsize = scale * 0.225;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = 'darkcyan';
-    ctx.font = (fontsize * 0.5) + 'px trebuchet ms';
+    ctx.font = (fontsize) + 'px trebuchet ms';
     ctx.fillText(percent + "%", cx, cy);
 
-    ctx.textAlign = 'right';
-    ctx.fillStyle = 'darkorange';
-    ctx.font = (fontsize) + 'px trebuchet ms';
-    ctx.fillText(temp, cx + 3 * radius, cy);
-    ctx.textAlign = 'left';
-    ctx.font = (fontsize) + 'px tahoma';
-    ctx.fillText('°C', cx + 3 * radius, cy);
+    ctz.drawImage(img, 0, 0);
+    ctz.textAlign = 'right';
+    ctz.fillStyle = 'darkorange';
+    ctz.font = (fontsize * 2) + 'px trebuchet ms';
+    ctz.fillText(temp, cx, cy);
+    ctz.textAlign = 'left';
+    ctz.font = (fontsize * 2) + 'px tahoma';
+    ctz.fillText('°C', cx, cy);
   }
 
 function toggleState(checkbox) {
