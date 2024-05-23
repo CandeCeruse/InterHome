@@ -41,7 +41,7 @@ function dmbChart(scale, percent, temp, id) {
     var ctx = document.getElementById('temperatureChart' + id).getContext('2d');
     var ctz = document.getElementById('humedadChart' + id).getContext('2d');
     var img = new Image();
-    img.src = "/home/jdoe/my_proyect/static/totoro_and_leaf.png";
+    //img.src = "/home/jdoe/my_proyect/static/totoro_and_leaf.png";
     var cx = scale / 2;
     var cy = scale / 2;
     var radius = scale * 0.375;
@@ -94,14 +94,22 @@ function dmbChart(scale, percent, temp, id) {
     ctx.font = (fontsize) + 'px trebuchet ms';
     ctx.fillText(percent + "%", cx, cy);
 
-    ctz.drawImage(img, 0, 0);
+    //Dibujar medida de temperatura
+    if (temp < 10){
+    		img.src = "../snow.png";
+        ctz.fillStyle = 'darkblue';
+    }
+    else{
+    		img.src = "../fire.png";
+        ctz.fillStyle = 'darkorange';
+    }
+    ctz.drawImage(img, 0, 0, scale, scale); //Reemplazar tercer argumento con: cy - scale * 0.8
     ctz.textAlign = 'right';
-    ctz.fillStyle = 'darkorange';
     ctz.font = (fontsize * 2) + 'px trebuchet ms';
-    ctz.fillText(temp, cx, cy);
+    ctz.fillText(temp, cx + scale * 0.75, cy);
     ctz.textAlign = 'left';
     ctz.font = (fontsize * 2) + 'px tahoma';
-    ctz.fillText('°C', cx, cy);
+    ctz.fillText('°C', cx + scale * 0.75, cy);
   }
 
 function toggleState(checkbox) {
