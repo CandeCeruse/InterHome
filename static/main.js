@@ -1,3 +1,71 @@
+$(document).ready(function() {
+    // Carga los nombres de los dispositivos desde el almacenamiento local
+    $('.device-label').each(function() {
+        let deviceId = this.id.split('-')[1];
+        let storedName = localStorage.getItem('deviceName-' + deviceId);
+        if (storedName) {
+            $(this).text(storedName);
+        }
+    });
+
+    // Evento click para los labels
+    $('.device-label').click(function(event) {
+        event.stopPropagation(); // Prevenir que el evento se propague al checkbox
+        let deviceId = this.id.split('-')[1];
+        nombrarDispositivo(deviceId);
+    });
+
+    function setLabels() {
+        const Url = "/set/label";
+        $.ajax({
+            url: Url,
+            type: "GET",
+            success: function(data) {
+                // Itera sobre los datos recibidos y actualiza el nombre de cada label
+                data.forEach(function(device) {
+                    // Encuentra el label correspondiente y actualiza su texto
+                    $('#label-' + device.id).text(device.name);
+                });
+            }
+        });
+    }
+
+    // El resto de tu código JavaScript va aquí...
+    // Por ejemplo:
+    setLabels();
+    getData();
+    setLightButtonState();
+    setInterval(function(){
+        window.location.reload();
+    }, 10000);
+});
+
+function nombrarDispositivo(deviceId) {
+    let texto;
+    let nombreDispositivo = prompt("Ingrese el nombre del dispositivo: ");
+    if (nombreDispositivo == null || nombreDispositivo == "") {
+        nombrarDispositivo(deviceId);
+    } else {
+        texto = nombreDispositivo;
+        document.getElementById("label-" + deviceId).innerText = texto;
+        localStorage.setItem('deviceName-' + deviceId, texto); // Guarda el nuevo nombre en el almacenamiento local
+        // Actualizar el nombre en el diccionario de dispositivos en el servidor
+        $.ajax({
+            url: "/update-device-name",
+            type: 'POST',
+            contentType: 'application/json', // Especifica que el contenido es JSON
+            data: JSON.stringify({name: texto, id: deviceId}),
+            success: function(data) {
+                console.log('Response:', data); // Manejo de respuesta exitosa
+            },
+            error: function(error) {
+                console.error('Error al actualizar el nombre del dispositivo:', error);
+            }
+        });
+    }
+}
+
+
 //Esta funcion recolecta los datos de los sensores de temperatura solamente,
 //Y envia la informacion de lo recolectado en formato JSON,
 // {'temperature': 37, 'humidity': 11, 'MAC': 'E8:DB:84:E5:08:96', 'device_id': 1}
@@ -11,6 +79,7 @@ function getData() {
             var temperatura = data.temperature;
             var humedad = data.humidity;
             dmbChart(300, humedad, temperatura, id);
+            // Cambiar la imagen basado en la temperatura
         }        
     });
 }
@@ -41,7 +110,6 @@ function dmbChart(scale, percent, temp, id) {
     var ctx = document.getElementById('temperatureChart' + id).getContext('2d');
     var ctz = document.getElementById('humedadChart' + id).getContext('2d');
     var img = new Image();
-    //img.src = "/home/jdoe/my_proyect/static/totoro_and_leaf.png";
     var cx = scale / 2;
     var cy = scale / 2;
     var radius = scale * 0.375;
@@ -54,6 +122,9 @@ function dmbChart(scale, percent, temp, id) {
     ctx.shadowBlur = 5;
     ctx.shadowColor = "rgba(150, 150, 150, 0.5)";
     ctx.shadowOffsetX = 7;
+    ctz.shadowBlur = 5;
+    ctz.shadowColor = "rgba(65, 65, 65, 0.5)";
+    ctz.shadowOffsetX = 7;
 
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, PI2);
@@ -96,20 +167,24 @@ function dmbChart(scale, percent, temp, id) {
 
     //Dibujar medida de temperatura
     if (temp < 10){
-    		img.src = "../snow.png";
+        //document.getElementById('snowImage').src = "{{ url_for('static', filename='/imagenes/snow.png') }}";
+        document.getElementById('snowImage').style.display = "block";
+        document.getElementById('fireImage').style.display = "none";
         ctz.fillStyle = 'darkblue';
     }
     else{
-    		img.src = "../fire.png";
+        //document.getElementById('fireImage').src = "{{ url_for('static', filename='/imagenes/fire.png') }}";
+        document.getElementById('fireImage').style.display = "block";
+        document.getElementById('snowImage').style.display = "none";
         ctz.fillStyle = 'darkorange';
     }
     ctz.drawImage(img, 0, 0, scale, scale); //Reemplazar tercer argumento con: cy - scale * 0.8
     ctz.textAlign = 'right';
     ctz.font = (fontsize * 2) + 'px trebuchet ms';
-    ctz.fillText(temp, cx + scale * 0.75, cy);
+    ctz.fillText(temp, cx, cy+27);
     ctz.textAlign = 'left';
     ctz.font = (fontsize * 2) + 'px tahoma';
-    ctz.fillText('°C', cx + scale * 0.75, cy);
+    ctz.fillText('°C', cx, cy+27);
   }
 
 function toggleState(checkbox) {

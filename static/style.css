@@ -4,6 +4,10 @@ body {
   margin: 0;
 }
 
+img {
+  filter: drop-shadow(4px 6px 12px rgb(65, 65, 65));     
+}
+
 .contenedor{
   width: 100vw;
   height: 100vh;
@@ -23,6 +27,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center; 
+  flex-wrap: wrap;
 }
 
 label {
@@ -33,6 +38,14 @@ label {
   border: 1px solid #ccc;
   border-radius: 5px;
   background-color: #ffffff;
+}
+
+.temperature-image{
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 input[type="checkbox"] {

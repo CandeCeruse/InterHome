@@ -119,13 +119,26 @@ def actualizar_estado():
     else:
         return jsonify({'error': 'Device not found'}), 404
 
-@app.route('/update-device-name/<int:device_id>', methods=['POST'])
-def update_device_name(device_id):
-    new_name = request.form.get('new_name')
+@app.route('/update-device-name', methods=['POST'])
+def update_device_name():
+    data = request.json
+    new_name = data.get('name', '')
+    device_id = data.get('id', '')
     if new_name:
-        devices[device_id]['name'] = new_name
-        print(f"Device name updated to {new_name} for device with ID: {device_id}")
+        # Accede al dispositivo por su ID en el diccionario devices
+        if str(device_id) in devices:
+            # Actualiza el nombre del dispositivo en el diccionario devices
+            devices[str(device_id)]['name'] = new_name
+            print(f"Device name updated to {new_name} for device with ID: {device_id}")
+        else:
+            print(f"No device found with ID: {device_id}")
     return jsonify({'status':'success'})
+
+@app.route('/set/label', methods=['GET'])
+def setLabel():
+    # Construye una lista de objetos con el ID y el nombre de cada dispositivo
+    device_labels = [{"id": id, "name": device['name']} for id, device in devices.items()]
+    return jsonify(device_labels)
 
 @app.route("/")
 def home():
