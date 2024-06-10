@@ -66,7 +66,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
   for (int i = 0; i < length; i++) {
     estado += (char)payload[i];
   }
-  if (estado == "ON"){
+  if (estado == "OFF"){
     digitalWrite(LED, LOW);
   } else {
     digitalWrite(LED, HIGH);  

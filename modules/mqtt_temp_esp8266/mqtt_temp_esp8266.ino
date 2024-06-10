@@ -5,10 +5,10 @@
 
 DHT11 dht11(2);
 
-const char *server = "192.168.1.13";
+const char *server = "10.3.141.1";
 int port = 1883;
-const char *ssid="Wifi01";
-const char *passwd = "k0z7m1gus";
+const char *ssid="InterHome";
+const char *passwd = "interhome";
 
 char serial_command = -1;
 unsigned long previousMillis = 0;
