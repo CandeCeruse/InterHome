@@ -3,11 +3,13 @@
 #include <PubSubClient.h>
 
 //Configuración de la red Wifi y la IP de la Raspberry
-const char *server = "192.168.1.13";
+//const char *server = "192.168.1.13";
+const char *server = "10.3.141.1";
+
 //const char *server = "192.168.75.184";
 int port = 1883;
-const char *ssid="Wifi01";
-const char *passwd = "k0z7m1gus";
+const char *ssid="InterHome";
+const char *passwd = "interhome";
 //const char *ssid="Nahuel";
 //const char *passwd = "MIC2018un+";
 
@@ -32,7 +34,7 @@ int buttonNew = 0;
 
 //Esta funcion publica el estado de la luz de este ESP
 String estadoLuz(){
-  int estadoLED = digitalRead(LED_BUILTIN);
+  int estadoLED = digitalRead(LED);
   //Si el pin está en HIGH
   if (estadoLED == LOW){
       String data = "{\"state\":\"ON\", \"MAC\":\"" + macAddress + "\"}";
@@ -53,7 +55,7 @@ void buttonLight(){
     buttonOld = buttonNew;
     if(buttonNew == LOW){
       ledState = !ledState;
-      digitalWrite(LED_BUILTIN, ledState);
+      digitalWrite(LED, ledState);
     }
   }
 }
@@ -65,9 +67,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
     estado += (char)payload[i];
   }
   if (estado == "ON"){
-    digitalWrite(LED_BUILTIN, LOW);
+    digitalWrite(LED, LOW);
   } else {
-    digitalWrite(LED_BUILTIN, HIGH);  
+    digitalWrite(LED, HIGH);  
   }
 }
 
@@ -75,8 +77,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length) {
 void setup() {
   Serial.begin (115200);
   pinMode(PIN_BUTTON, INPUT); // Configura el pin del pulsador como entrada
-  pinMode(LED_BUILTIN, OUTPUT); // Configura el pin del LED como salida
-  digitalWrite(LED_BUILTIN, ledState);
+  pinMode(LED, OUTPUT); // Configura el pin del LED como salida
+  digitalWrite(LED,ledState);
 
   WiFi.begin(ssid,passwd);
   Serial.print ("Connecting to AP");
