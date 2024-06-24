@@ -2,7 +2,7 @@
 
 ## Portada
 - **Título del manual**: Manual de Usuario para InterHome
-- ![](Logo.jpg)
+- <img src="Logo.jpg" width="300" height="200">
 - **24/06/2024**
 - **Integrantes: Ceruse Candelaria, Piñero Iván, Renolfi Ezequiel, Fioroni Tomás**
 
