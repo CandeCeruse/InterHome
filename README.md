@@ -10,14 +10,14 @@
 1. [Introducción](#id1)
 2. [Requisitos del Sistema](#id2)
 3. [Instalación](#id3)
-4. [Preparación](#id4)
-5. [Instalación del Hardware](#id5)
-6. [Instalación del Software](#id6)
-7. [Configuración](#id7)
-8. [Operación](#id8)
-9. [Mantenimiento](#id9)
-10. [Seguridad](#id10)
-11. [Apéndices](#id11)
+  3.1. [Preparación](#id4)
+  3.2. [Instalación del Hardware](#id5)
+  3.3. [Instalación del Software](#id6)
+4. [Configuración](#id7)
+5. [Operación](#id8)
+6. [Mantenimiento](#id9)
+7. [Seguridad](#id10)
+8. [Apéndices](#id11)
 
 
 ## Introducción<a name="id1"></a>
