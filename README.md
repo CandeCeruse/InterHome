@@ -14,9 +14,8 @@
   3.3. [Instalación del Software](#id6)  
 4. [Configuración](#id7)
 5. [Operación](#id8)
-6. [Mantenimiento](#id9)
-7. [Seguridad](#id10)
-8. [Apéndices](#id11)
+6. [Seguridad](#id9)
+7. [Apéndices](#id10)
 
 
 ## Introducción<a name="id1"></a>
