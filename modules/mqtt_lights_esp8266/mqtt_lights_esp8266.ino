@@ -3,15 +3,11 @@
 #include <PubSubClient.h>
 
 //Configuración de la red Wifi y la IP de la Raspberry
-//const char *server = "192.168.1.13";
 const char *server = "10.3.141.1";
 
-//const char *server = "192.168.75.184";
 int port = 1883;
 const char *ssid="InterHome";
 const char *passwd = "interhome";
-//const char *ssid="Nahuel";
-//const char *passwd = "MIC2018un+";
 
 char serial_command = -1;
 unsigned long previousMillis = 0;
@@ -26,7 +22,7 @@ String clientId = "ESP-Client/" + macAddress;
 String topic = "device/light/" + macAddress;
 String label = "Cocina";
 
-int LED = 4; // D2 (Estamos usando el BUILTIN igual, pero si es necesario cambiar)
+int LED = 4; // D2 (Estamos usando el BUILTIN, pero si es necesario cambiar)
 int PIN_BUTTON = 5; //D1
 int ledState = 0;
 int buttonOld = 0;
