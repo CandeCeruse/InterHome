@@ -2,7 +2,7 @@
 
 ## Portada
 - **Título del manual**: Manual de Usuario para InterHome
-- **Logotipo del proyecto**
+- ![](Logo.jpg)
 - **24/06/2024**
 - **Integrantes: Ceruse Candelaria, Piñero Iván, Renolfi Ezequiel, Fioroni Tomás**
 
