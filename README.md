@@ -19,48 +19,63 @@
 
 
 ## Introducción<a name="id1"></a>
-- **Descripción general del sistema**: Explicación breve de qué es el sistema de domótica y sus principales funciones.
-- **Propósito del manual**: Qué se pretende lograr con el manual.
-- **Audiencia**: A quién está dirigido el manual (usuarios finales, instaladores, etc.).
+- **Descripción general del sistema**: Este software puede considerarse una porción de una vivienda inteligente, ya que las funciones que abarca son un subconjunto de un software comercial. El software provee control del encendido y apagado de luces así como el acceso a mediciones de temperatura y humedad del ambiente a partir de una página web, y no soporta características tales como control de electrodomésticos, riego automático, etc. El proyecto funciona de forma independiente a agentes externos y no forma parte de un sistema más grande.
+
+- **Propósito del manual**: Este manual pretende ser una guía para instalar y configurar este proyecto de principio a fin, y ser un punto de partida para la ampliación de InterHome.
+- **Audiencia**: Este manual está dirigido a cualquier persona interesada en aprender sobre Sistemas Embebidos y que quiera tomar este proyecto y expandir su funcionalidad.
 
 ## Requisitos del Sistema<a name="id2"></a>
-- **Hardware necesario**: Listado de dispositivos y componentes necesarios.
-- **Software necesario**: Aplicaciones o software requerido para operar el sistema.
-- **Requisitos de red**: Configuración de red recomendada o necesaria.
+- **Hardware necesario**: Listado de dispositivos y componentes necesarios.  
+  - Módulo sensores  
+    - Chip *ESP8266 NodeMCU*
+    - Sensor de Temperatura y Humedad *DHT11*
+  - Módulo luces  
+    - Chip *ESP8266 NodeMCU*
+    - Módulo relé de un canal de 5V.
+    - Botón pulsador
+
+- **Software necesario**: El dispositivo de instalación requiere de *Python, Flask, MQTT Mosquitto, Paho MQTT* y *RaspAP* en caso de utilizar una *RaspberryPi*.  
+  - Módulo sensores: Código *mqtt_temp_esp8266*
+  - Módulo luces: Código *mqtt_lights_esp8266*
+- **Requisitos de red**: La red sobre la que funcionará el proyecto debe contar con una conexión de tipo LAN para conectar el módulo central. *RaspAP* cuenta con una modalidad de conexión inalámbrica, pero por el momento resulta inestable, recomendamos investigar esto ya que sería una buena adición al proyecto.
 
 ## Instalación<a name="id3"></a>
 
 ### Preparación<a name="id4"></a>
-- **Consideraciones previas**: Puntos a tener en cuenta antes de empezar la instalación.
-- **Herramientas necesarias**: Listado de herramientas necesarias para la instalación física.
+- **Consideraciones previas**: Se debe de disponer una conexión estable a red, debido a las múltiples descargas en la instalación de *Software*.
 
 ### Instalación del Hardware<a name="id5"></a>
-- **Paso a paso para la instalación**: Instrucciones detalladas para conectar y configurar los dispositivos físicos (sensores, actuadores, controladores, etc.).
-- **Diagramas y fotos**: Imágenes que faciliten la comprensión de los pasos.
+- **Paso a paso para la instalación**:
+  - Módulo central: se debe conectar la *RaspberryPi* a una fuente de alimentación y a la red WiFi mediante el cable de red.
+  - Módulos de sensores/luces: conexiones detalladas en el esquema.
+    - Módulo de sensores: El *ESP8266* se debe conectar a una fuente de alimentación y al pin de datos del sensor *DHT11* mediante el pin 5.
+    - Módulo de luces: El *ESP8266* se debe conectar a una fuente de alimentación y al relé mediante el pin 5.
+- **Diagramas y fotos**: Los esquemas detallados de conexión de los módulos se encuentran como PDF’s en la carpeta *Placas*, dentro de este repositorio. Además son provistos los archivos en formato *.pdsprj* (Modificables con *Proteus Professional 8*), que habilitan la libre edición de los esquemas del Hardware de los módulos.
 
 ### Instalación del Software<a name="id6"></a>
-- **Descarga e instalación del software**: Instrucciones para descargar e instalar el software necesario.
-- **Configuración inicial del software**: Pasos para configurar el software por primera vez.
+- **Descarga e instalación del software**: Se deben instalar los Software anteriormente mencionados *(Python, Flask, MQTT Mosquitto, Paho-MQTT, RaspAP)*
+  - Módulos *ESP8266*: los códigos *mqtt_temp_esp8266* y *mqtt_lights_esp8266* deben ser abiertos mediante un compilador de Arduino como *ArduinoIDE* en una computadora conectada por USB a un chip *ESP8266* para subir los códigos a las mismas.
+- **Configuración inicial del software**: Se debe configurar el sistema para que se ejecute el script *levantar_app.sh* junto al inicio del sistema. Para esto se utiliza crontab, que se configura de la siguiente manera;
+  ```
+  #Abrimos el archivo de configuración de crontab para el usuario
+  crontab -e
+  #Agregar la siguiente línea al final del código
+  @reboot /home/tu_usuario/levantar_app.sh 
+  ```
 
 ## Configuración<a name="id7"></a>
-- **Conexión de dispositivos**: Cómo conectar los dispositivos al sistema de domótica.
-- **Configuración de la red**: Configuración de la red para asegurar la comunicación entre dispositivos.
-- **Configuración de la interfaz de usuario**: Cómo personalizar y utilizar la interfaz de usuario.
+- *Conexión de dispositivos*: Para acceder a la página web de InterHome el usuario deberá conectarse a la red InterHome (repetida por la Raspberry Pi) y escribir en el buscador:
+  ```
+  localhost: 5000
+  ```
 
 ## Operación<a name="id8"></a>
-- **Uso diario**: Instrucciones para el uso diario del sistema.
-- **Funciones principales**: Detalles sobre las principales funciones y cómo utilizarlas.
-- **Solución de problemas comunes**: Guía para resolver problemas comunes que pueden surgir.
+- *Uso diario*: El sistema puede ser utilizado para controlar luces y obtener las medidas de temperatura y humedad donde haya módulos correspondientes instalados.
+- *Funciones principales*: El sistema puede ser controlado mediante la interfaz de la página web.
 
-## Mantenimiento<a name="id9"></a>
-- **Mantenimiento preventivo**: Consejos y procedimientos para el mantenimiento regular del sistema.
-- **Actualización del sistema**: Cómo realizar actualizaciones de software y firmware.
+## Seguridad<a name="id9"></a>
+- *Recomendaciones de seguridad*: Se recomienda personalizar la contraseña de la red de InterHome con una clave segura.
 
-## Seguridad<a name="id10"></a>
-- **Recomendaciones de seguridad**: Cómo asegurar el sistema de domótica contra accesos no autorizados.
-- **Copias de seguridad**: Instrucciones para realizar y restaurar copias de seguridad del sistema.
-
-## Apéndices<a name="id11"></a>
-- **Glosario**: Definición de términos técnicos utilizados en el manual.
-- **FAQ**: Preguntas frecuentes y sus respuestas.
-- **Recursos adicionales**: Enlaces a recursos adicionales, como foros, soporte técnico, etc.
+## Apéndices<a name="id10"></a>
+- *Glosario*:  
+  - **MQTT:** *Message Queuing Telemetry Transport*.  
